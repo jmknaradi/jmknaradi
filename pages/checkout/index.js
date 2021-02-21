@@ -19,6 +19,7 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import { CardElement, Elements, ElementsConsumer } from "@stripe/react-stripe-js";
+import Dropdown from "../../components/common/atoms/Dropdown";
 
 /**
  * Render the checkout page
@@ -347,13 +348,13 @@ class CheckoutPage extends Component {
             <title>Objednávka</title>
           </Head>
     <form name="order" netlify hidden>
-      <input type="text" name="firstName" />
-      <input type="text" name="shipping[street]" />
-      <input type="text" name="dic" />
-      <input type="text" name="lastName" />
-      <input type="text" name="phone" />
-      <input type="text" name="customer[email]" />
-      <select name="fulfillment[shipping_method]" />
+      <input name="firstName" />
+      <input name="shipping[street]" />
+      <input name="dic" />
+      <input name="lastName" />
+      <input name="phone" />
+      <input name="customer[email]" />
+      <Dropdown name="fulfillment[shipping_method]" />
       <textarea name="orderNotes"></textarea>
       <button type="submit"></button>
     </form>
