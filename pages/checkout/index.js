@@ -346,7 +346,15 @@ class CheckoutPage extends Component {
           <Head>
             <title>Objednávka</title>
           </Head>
-
+    <form name="order" netlify hidden>
+      <input type="text" name="firstName" />
+      <input type="text" name="shipping[street]" />
+      <input type="text" name="dic" />
+      <input type="text" name="lastName" />
+      <input type="email" name="customer[email]" />
+      <select name="fulfillment[shipping_method]" />
+      <textarea name="orderNotes"></textarea>
+    </form>
           <div className="custom-container py-5 my-4 my-sm-5">
             {/* Row */}
             <div className="row mt-4">
