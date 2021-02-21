@@ -1,30 +1,31 @@
-import React, { Component } from 'react';
-import Link from 'next/link'
-import { Transition } from 'react-transition-group';
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
-import CartItem from '../cart/CartItem';
-import { connect } from 'react-redux';
+import React, { Component } from "react";
+import Link from "next/link";
+import { Transition } from "react-transition-group";
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from "body-scroll-lock";
+import CartItem from "../cart/CartItem";
+import { connect } from "react-redux";
 // Cart redux action creators
-import { retrieveCart as dispatchRetreiveCart } from '../../store/actions/cartActions';
+import { retrieveCart as dispatchRetreiveCart } from "../../store/actions/cartActions";
+import ShippingForm from "../../components/checkout/common/ShippingForm";
 
 const duration = 300;
 
 const defaultStyle = {
-  transition: `transform ${duration}ms ease-in-out`
+  transition: `transform ${duration}ms ease-in-out`,
 };
 
 const transitionStyles = {
-  entering: { transform: 'translateX(100%)' },
-  entered: { transform: 'translateX(0)' },
-  exiting: { transform: 'translateX(100%)' },
-  exited: { transform: 'translateX(100%)' }
+  entering: { transform: "translateX(100%)" },
+  entered: { transform: "translateX(0)" },
+  exiting: { transform: "translateX(100%)" },
+  exited: { transform: "translateX(100%)" },
 };
 
 const backdropTransitionStyles = {
-  entering: { opacity: '0' },
-  entered: { opacity: '0.56' },
-  exiting: { opacity: '0' },
-  exited: { opacity: '0' }
+  entering: { opacity: "0" },
+  entered: { opacity: "0.56" },
+  exiting: { opacity: "0" },
+  exited: { opacity: "0" },
 };
 
 class Cart extends Component {
@@ -41,7 +42,7 @@ class Cart extends Component {
    * Retrieve cart and contents client-side to dispatch to store
    */
   componentDidMount() {
-    this.props.dispatchRetreiveCart()
+    this.props.dispatchRetreiveCart();
   }
 
   componentWillUnmount() {
@@ -59,11 +60,11 @@ class Cart extends Component {
   recountCartPrices(customer, products, cart) {
     const customerDiscounts = customer.external_id.split("-");
     let subtotal = 0;
-    cart.line_items.map(item => {
-      const product = products.find(product => product.id === item.product_id);
+    cart.line_items.map((item) => {
+      const product = products.find((product) => product.id === item.product_id);
       const category = product.categories[0].slug;
       const discountPercentage = customerDiscounts[category];
-      const discountPrice = product.price.formatted * (1 - (discountPercentage / 100));
+      const discountPrice = product.price.formatted * (1 - discountPercentage / 100);
       const totalDiscountPrice = item.quantity * discountPrice;
 
       item.discountPercentage = discountPercentage;
@@ -89,13 +90,13 @@ class Cart extends Component {
         onEntering={this.onEntering}
         onExiting={this.onExiting}
       >
-        {state => (
+        {(state) => (
           <div className="cart-modal font-weight-regular">
             <div
               className="backdrop"
               style={{
                 transition: `opacity ${duration}ms ease-in-out`,
-                ...backdropTransitionStyles[state]
+                ...backdropTransitionStyles[state],
               }}
               onClick={() => toggle(false)}
             />
@@ -105,43 +106,30 @@ class Cart extends Component {
               className="main-cart-content d-flex flex-column"
               style={{
                 ...defaultStyle,
-                ...transitionStyles[state]
+                ...transitionStyles[state],
               }}
             >
               {/* Cart Header */}
               <div className="px-4 px-md-5">
                 <div className="pt-4 pb-3 borderbottom border-color-black d-flex justify-content-between align-items-center">
-                  <p className="font-family-secondary font-size-subheader">
-                    Nákupní košík
-                  </p>
-                  <button
-                    className="bg-transparent p-0"
-                    onClick={() => toggle(false)}
-                  >
+                  <p className="font-family-secondary font-size-subheader">Nákupní košík</p>
+                  <button className="bg-transparent p-0" onClick={() => toggle(false)}>
                     <img src="/icon/cross.svg" />
                   </button>
                 </div>
               </div>
               {cart.total_unique_items > 0 ? (
                 <>
-                  <div
-                    className="flex-grow-1 overflow-auto pt-4"
-                    ref={this.cartScroll}
-                  >
+                  <div className="flex-grow-1 overflow-auto pt-4" ref={this.cartScroll}>
                     {this.recountCartPrices(customer, products, cart)}
-                    {cart.line_items.map(item => (
-                      <CartItem
-                        key={item.id}
-                        item={item}
-                      />
+                    {cart.line_items.map((item) => (
+                      <CartItem key={item.id} item={item} />
                     ))}
                   </div>
                   {/* Cart Footer */}
                   <div className="cart-footer">
                     <div className="mb-3 d-flex">
-                      <p className="font-color-light mr-2 font-weight-regular">
-                        Mezisoučet:
-                      </p>
+                      <p className="font-color-light mr-2 font-weight-regular">Mezisoučet:</p>
                       <p>{cart.subtotal.formatted} Kč</p>
                     </div>
                     <div className="row">
@@ -153,6 +141,17 @@ class Cart extends Component {
                         </Link>
                       </div>
                       <div className="col-12 col-md-6">
+                        <form name="order" data-netlify="true" hidden>
+                          <input type="hidden" name="form-name" value="order" />
+                          <input name="firstName" />
+                          <input name="shipping[street]" />
+                          <input name="dic" />
+                          <input name="lastName" />
+                          <input name="phone" />
+                          <input name="customer[email]" />
+                          <select name="fulfillment[shipping_method]"></select>
+                          <textarea name="orderNotes" />
+                        </form>
                         <Link href="/checkout">
                           <a className="h-56 d-flex align-items-center justify-content-center bg-black w-100 flex-grow-1 font-weight-medium font-color-white px-3">
                             K objednávce
@@ -168,14 +167,12 @@ class Cart extends Component {
                     <img src="/icon/cart.svg" className="w-32" />
                     <div
                       className="position-absolute font-size-tiny font-weight-bold"
-                      style={{ right: '-4px', top: '-4px' }}
+                      style={{ right: "-4px", top: "-4px" }}
                     >
                       0
                     </div>
                   </div>
-                  <p className="text-center font-weight-medium">
-                    Váš košík je prázdný
-                  </p>
+                  <p className="text-center font-weight-medium">Váš košík je prázdný</p>
                 </div>
               )}
             </div>
@@ -186,6 +183,6 @@ class Cart extends Component {
   }
 }
 
-export default connect(state => state, {
+export default connect((state) => state, {
   dispatchRetreiveCart,
 })(Cart);

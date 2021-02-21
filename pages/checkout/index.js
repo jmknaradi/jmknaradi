@@ -19,7 +19,6 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import { CardElement, Elements, ElementsConsumer } from "@stripe/react-stripe-js";
-import Dropdown from "../../components/common/atoms/Dropdown";
 
 /**
  * Render the checkout page
