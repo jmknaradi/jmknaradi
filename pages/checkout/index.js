@@ -135,10 +135,6 @@ class CheckoutPage extends Component {
   }
 
   handleChangeForm(e) {
-    // when input cardNumber changes format using ccFormat helper
-    if (e.target.name === "cardNumber") {
-      e.target.value = ccFormat(e.target.value);
-    }
     // update form's input by name in state
     this.setState({
       [e.target.name]: e.target.value,
@@ -294,8 +290,9 @@ class CheckoutPage extends Component {
   }
 
   recountCartPrices(customer, products, cart) {
-      const customerDiscounts = customer.external_id.split("-");
-      let subtotal = 0;
+    const customerDiscounts = customer.external_id.split("-");
+    let subtotal = 0;
+    if (this.isNotCartEmpty(cart)) {
       cart.line_items.map((item) => {
         const product = products.find((product) => product.id === item.product_id);
         const category = product.categories[0].slug;
@@ -310,12 +307,29 @@ class CheckoutPage extends Component {
         return item;
       });
       cart.subtotal.formatted = subtotal;
+    }
   }
 
-  render() {
-      const { customer, products, cart } = this.props;
-      if (customer) {
+  handleSubmit = (e) => {
+    const encode = (data) => {
+      return Object.keys(data)
+          .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+          .join("&");
+    }
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encode({ "form-name": "order", ...this.state })
+    })
+      .then(() => alert("Success!"))
+      .catch(error => alert(error));
+      
+    e.preventDefault();
+  };
 
+  render() {
+    const { customer, products, cart } = this.props;
+    if (customer) {
       this.recountCartPrices(customer, products, cart);
       const selectedShippingOption = PAYNMENT_METHODS.find(
         ({ id }) => id === this.state["fulfillment[shipping_method]"]
@@ -350,7 +364,8 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                  <form onChange={this.handleChangeForm}>
+                  <form onSubmit={this.handleSubmit} onChange={this.handleChangeForm}>
+                    <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
                       Fakturační údaje
@@ -378,7 +393,6 @@ class CheckoutPage extends Component {
                         type="submit"
                         className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
                         disabled={!selectedShippingOption}
-                        onClick={this.captureOrder}
                       >
                         Odeslat objednávku
                       </button>
@@ -453,7 +467,7 @@ class CheckoutPage extends Component {
                     <button
                       type="submit"
                       className="bg-black mt-4 font-color-white w-100 border-none h-56 font-weight-semibold d-lg-none"
-                      onClick={this.captureOrder}
+                      onClick={this.handleSubmit}
                       disabled={!selectedShippingOption}
                     >
                       Odeslat objednávku
