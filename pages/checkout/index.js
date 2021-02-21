@@ -347,17 +347,40 @@ class CheckoutPage extends Component {
           <Head>
             <title>Objednávka</title>
           </Head>
-    <form name="order" netlify hidden>
-      <input name="firstName" />
-      <input name="shipping[street]" />
-      <input name="dic" />
-      <input name="lastName" />
-      <input name="phone" />
-      <input name="customer[email]" />
-      <Dropdown name="fulfillment[shipping_method]" />
-      <textarea name="orderNotes"></textarea>
-      <button type="submit"></button>
-    </form>
+          <form name="order" method="post" data-netlify="true" onChange={this.handleChangeForm} hidden>
+                    <input type="hidden" name="form-name" value="order" />
+                    {/* ShippingDetails */}
+                    <p className="font-size-subheader font-weight-semibold mb-4">
+                      Fakturační údaje
+                    </p>
+                    <div className="mb-5">
+                      <ShippingForm
+                        firstName={this.state.firstName}
+                        lastName={this.state.lastName}
+                        customerEmail={this.state["customer[email]"]}
+                        shippingOptions={PAYNMENT_METHODS}
+                        selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
+                        selectedShippingOption={selectedShippingOption}
+                        shippingStreet={this.state["shipping[street]"]}
+                        shippingTownCity={this.state["shipping[town_city]"]}
+                        shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
+                        orderNotes={this.state.orderNotes}
+                      />
+                    </div>
+
+                    <p className="checkout-error">
+                      {!selectedShippingOption ? "Vyberte platební metodu!" : ""}
+                    </p>
+                    {customer ? (
+                      <button
+                        type="submit"
+                        className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
+                        disabled={!selectedShippingOption}
+                      >
+                        Odeslat objednávku
+                      </button>
+                    ) : null}
+                  </form>
           <div className="custom-container py-5 my-4 my-sm-5">
             {/* Row */}
             <div className="row mt-4">

@@ -72,7 +72,7 @@ const Footer = () => (
         </div>
       </div>
     </div>
-    <div className="pt-md-5">
+    <div className="pt-md-2">
       <div className="bg-brand300">
         <div className="custom-container d-flex flex-column flex-md-row align-items-center justify-content-between">
           <div className="pt-5 pb-0 pt-md-4 pb-md-4 d-flex align-items-center flex-wrap justify-content-center">
