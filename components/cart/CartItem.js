@@ -26,7 +26,6 @@ class CartItem extends Component {
 
   render() {
     const { item } = this.props;
-    {console.log(item)}
     return (
       <div className="px-4 px-md-5 mb-2">
         <div className="cart-item d-flex">

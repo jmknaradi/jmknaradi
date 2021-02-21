@@ -5,7 +5,7 @@ const Footer = () => (
     <form name="order" data-netlify="true" hidden>
       <input type="hidden" name="form-name" value="order" />
       <input name="firstName" />
-      <input name="shipping[street]" />
+      <input name="ico" />
       <input name="dic" />
       <input name="lastName" />
       <input name="phone" />

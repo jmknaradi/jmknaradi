@@ -43,7 +43,9 @@ class CheckoutPage extends Component {
       "customer[email]": "",
       "customer[id]": null,
       "shipping[name]": "",
-      "shipping[street]": "",
+      ico: "",
+      phone: "",
+      dic: "",
       orderNotes: "",
 
       "fulfillment[shipping_method]": "Platba předem",
@@ -55,7 +57,6 @@ class CheckoutPage extends Component {
         "customer[email]": null,
         "shipping[name]": null,
         "shipping[street]": null,
-        "shipping[town_city]": null,
         "shipping[postal_zip_code]": null,
       },
       loading: false,
@@ -310,12 +311,25 @@ class CheckoutPage extends Component {
     }
   }
 
-  handleSubmit = (e) => {
+  handleSubmit(e, cart) {
     const encode = (data) => {
+      console.log(data);
       return Object.keys(data)
           .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
           .join("&");
     }
+    console.log(cart);
+    /*const body = {
+      formName: "order",
+      name: this.state.firstName,
+      address: this.state.lastName,
+      ico: this.state.ico,
+      dic: this.state.dic,
+      phone: this.state.phone
+    };
+    console.log(body);
+    console.log(encode({ "form-name": "order", body }));*/
+    /*
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -323,7 +337,7 @@ class CheckoutPage extends Component {
     })
       .then(() => alert("Success!"))
       .catch(error => alert(error));
-      
+      */
     e.preventDefault();
   };
 
@@ -360,9 +374,9 @@ class CheckoutPage extends Component {
                         shippingOptions={PAYNMENT_METHODS}
                         selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
                         selectedShippingOption={selectedShippingOption}
-                        shippingStreet={this.state["shipping[street]"]}
-                        shippingTownCity={this.state["shipping[town_city]"]}
+                        ico={this.state.ico}
                         shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
+                        phone={this.state.phone}
                         orderNotes={this.state.orderNotes}
                       />
                     </div>
@@ -374,7 +388,7 @@ class CheckoutPage extends Component {
                       <button
                         type="submit"
                         className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
-                        disabled={!selectedShippingOption}
+                        disabled={true}
                       >
                         Odeslat objednávku
                       </button>
@@ -397,7 +411,7 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                 <form name="order" method="POST" data-netlify="true" onSubmit={this.handleSubmit} onChange={this.handleChangeForm}>
+                 <form name="order" method="POST" data-netlify="true" onSubmit={(e) => this.handleSubmit(e, cart)} onChange={this.handleChangeForm}>
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
@@ -425,7 +439,7 @@ class CheckoutPage extends Component {
                       <button
                         type="submit"
                         className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
-                        disabled={!selectedShippingOption}
+                        disabled={true}
                       >
                         Odeslat objednávku
                       </button>
@@ -501,7 +515,7 @@ class CheckoutPage extends Component {
                       type="submit"
                       className="bg-black mt-4 font-color-white w-100 border-none h-56 font-weight-semibold d-lg-none"
                       onClick={this.handleSubmit}
-                      disabled={!selectedShippingOption}
+                      disabled={true}
                     >
                       Odeslat objednávku
                     </button>

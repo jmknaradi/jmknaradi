@@ -18,10 +18,10 @@ export default class ShippingForm extends Component {
       selectedShippingOption,
       firstName,
       lastName,
-      shippingTownCity,
-      shippingStreet,
-      shippingPostalZipCode,
+      ico,
+      phone,
       customerEmail,
+      dic,
       orderNotes,
     } = this.props;
     return (
@@ -30,23 +30,24 @@ export default class ShippingForm extends Component {
           <div className="col-12 col-sm-4 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Název firmy*</p>
-              <input name="firstName" value={firstName} className="rounded-0 w-100" />
+              <input name="firstName" value={firstName} className="rounded-0 w-100" required/>
             </label>
           </div>
           <div className="col-12 col-sm-4 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">IČO*</p>
               <input
-                name="shipping[street]"
-                value={shippingStreet}
+                name="ico"
+                value={ico}
                 className="rounded-0 w-100"
+                required
               />
             </label>
           </div>
           <div className="col-12 col-sm-4 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">DIČ (volitelné)</p>
-              <input name="dic" className="rounded-0 w-100" />
+              <input name="dic" value={dic} className="rounded-0 w-100" />
             </label>
           </div>
         </div>
@@ -54,7 +55,7 @@ export default class ShippingForm extends Component {
           <div className="col-12 col-sm-12 mb-12">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Adresa*</p>
-              <input name="lastName" value={lastName} className="rounded-0 w-100" />
+              <input name="lastName" value={lastName} className="rounded-0 w-100" required/>
             </label>
           </div>
         </div>
@@ -62,13 +63,13 @@ export default class ShippingForm extends Component {
           <div className="col-12 col-sm-6 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Telefonní číslo</p>
-              <input name="phone" className="rounded-0 w-100" />
+              <input name="phone" value={phone} className="rounded-0 w-100" />
             </label>
           </div>
           <div className="col-12 col-sm-6 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Emailová adresa*</p>
-              <input name="customer[email]" value={customerEmail} className="rounded-0 w-100" />
+              <input name="customer[email]" value={customerEmail} className="rounded-0 w-100" required/>
             </label>
           </div>
         </div>
