@@ -364,7 +364,7 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                 <form name="order" onSubmit={this.handleSubmit} onChange={this.handleChangeForm} data-netlify="true">
+                 <form name="order" onSubmit={this.handleSubmit} onChange={this.handleChangeForm} netlify>
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
@@ -394,7 +394,7 @@ class CheckoutPage extends Component {
                         className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
                         disabled={!selectedShippingOption}
                       >
-                        Odeslat objednávkuu
+                        Odeslat objednávku
                       </button>
                     ) : null}
                   </form>
