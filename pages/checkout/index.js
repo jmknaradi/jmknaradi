@@ -347,7 +347,7 @@ class CheckoutPage extends Component {
           <Head>
             <title>Objednávka</title>
           </Head>
-          <form name="order" method="post" data-netlify="true" onChange={this.handleChangeForm} hidden>
+          <form name="order" method="POST" data-netlify="true" onChange={this.handleChangeForm} hidden>
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
@@ -398,7 +398,7 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                 <form name="order" method="post" data-netlify="true" onChange={this.handleChangeForm}>
+                 <form name="order" method="POST" data-netlify="true" onChange={this.handleChangeForm}>
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
