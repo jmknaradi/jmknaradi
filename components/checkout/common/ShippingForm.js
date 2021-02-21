@@ -62,7 +62,7 @@ export default class ShippingForm extends Component {
           <div className="col-12 col-sm-6 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Telefonní číslo</p>
-              <input className="rounded-0 w-100" />
+              <input name="phone" className="rounded-0 w-100" />
             </label>
           </div>
           <div className="col-12 col-sm-6 mb-3">
