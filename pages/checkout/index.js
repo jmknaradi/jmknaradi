@@ -342,12 +342,13 @@ class CheckoutPage extends Component {
         taxes: this.props.cart.taxPrice,
         totalPriceWithTaxes: this.props.cart.totalSum,
         items: items
-      }
+      },
+      shippingMethod: this.state["fulfillment[shipping_method]"]
     };
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({ "form-name": "order", body })
+      body: encode({ "form-name": "order", ...this.state })
     })
       .then(() => alert("Success!"))
       .catch(error => alert(error));
@@ -400,9 +401,6 @@ class CheckoutPage extends Component {
                         shippingOptions={PAYNMENT_METHODS}
                         selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
                         selectedShippingOption={selectedShippingOption}
-                        shippingStreet={this.state["shipping[street]"]}
-                        shippingTownCity={this.state["shipping[town_city]"]}
-                        shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
                         orderNotes={this.state.orderNotes}
                       />
                     </div>
