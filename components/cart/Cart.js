@@ -141,17 +141,6 @@ class Cart extends Component {
                         </Link>
                       </div>
                       <div className="col-12 col-md-6">
-                        <form name="order" data-netlify="true" hidden>
-                          <input type="hidden" name="form-name" value="order" />
-                          <input name="firstName" />
-                          <input name="shipping[street]" />
-                          <input name="dic" />
-                          <input name="lastName" />
-                          <input name="phone" />
-                          <input name="customer[email]" />
-                          <select name="fulfillment[shipping_method]"></select>
-                          <textarea name="orderNotes" />
-                        </form>
                         <Link href="/checkout">
                           <a className="h-56 d-flex align-items-center justify-content-center bg-black w-100 flex-grow-1 font-weight-medium font-color-white px-3">
                             K objednávce
