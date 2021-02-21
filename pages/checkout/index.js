@@ -294,7 +294,6 @@ class CheckoutPage extends Component {
   }
 
   recountCartPrices(customer, products, cart) {
-    if (customer) {
       const customerDiscounts = customer.external_id.split("-");
       let subtotal = 0;
       cart.line_items.map((item) => {
@@ -311,153 +310,164 @@ class CheckoutPage extends Component {
         return item;
       });
       cart.subtotal.formatted = subtotal;
-    }
   }
 
   render() {
-    const { customer, products, cart } = this.props;
-    this.recountCartPrices(customer, products, cart);
-    const selectedShippingOption = PAYNMENT_METHODS.find(
-      ({ id }) => id === this.state["fulfillment[shipping_method]"]
-    );
-    if (this.state.loading) {
-      return <Loader />;
-    }
-    const taxPrice = this.isNotCartEmpty(cart) ? cart.subtotal.formatted * 0.21 : "";
-    const totalSum = this.isNotCartEmpty(cart)
-      ? Number(cart.subtotal.formatted) + Number(taxPrice) + Number(selectedShippingOption.price)
-      : "";
-    return (
-      <Root>
-        <Head>
-          <title>Objednávka</title>
-        </Head>
+      const { customer, products, cart } = this.props;
+      if (customer) {
 
-        <div className="custom-container py-5 my-4 my-sm-5">
-          {/* Row */}
-          <div className="row mt-4">
-            <div className="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-0">
-              {/* Breadcrumbs */}
-              <div className="d-flex pb-4 breadcrumb-container">
-                <Link href="/collection">
-                  <div className="font-size-caption text-decoration-underline cursor-pointer">
-                    Obchod
+      this.recountCartPrices(customer, products, cart);
+      const selectedShippingOption = PAYNMENT_METHODS.find(
+        ({ id }) => id === this.state["fulfillment[shipping_method]"]
+      );
+      if (this.state.loading) {
+        return <Loader />;
+      }
+      const taxPrice = this.isNotCartEmpty(cart) ? cart.subtotal.formatted * 0.21 : "";
+      const totalSum = this.isNotCartEmpty(cart)
+        ? Number(cart.subtotal.formatted) + Number(taxPrice) + Number(selectedShippingOption.price)
+        : "";
+      return (
+        <Root>
+          <Head>
+            <title>Objednávka</title>
+          </Head>
+
+          <div className="custom-container py-5 my-4 my-sm-5">
+            {/* Row */}
+            <div className="row mt-4">
+              <div className="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-0">
+                {/* Breadcrumbs */}
+                <div className="d-flex pb-4 breadcrumb-container">
+                  <Link href="/collection">
+                    <div className="font-size-caption text-decoration-underline cursor-pointer">
+                      Obchod
+                    </div>
+                  </Link>
+                  <img src="/icon/arrow-right.svg" className="w-16 mx-1" alt="Arrow icon" />
+                  <div className="font-size-caption font-weight-bold cursor-pointer">
+                    Objednávka
                   </div>
-                </Link>
-                <img src="/icon/arrow-right.svg" className="w-16 mx-1" alt="Arrow icon" />
-                <div className="font-size-caption font-weight-bold cursor-pointer">Objednávka</div>
+                </div>
+                {this.isNotCartEmpty(cart) && (
+                  <form onChange={this.handleChangeForm}>
+                    {/* ShippingDetails */}
+                    <p className="font-size-subheader font-weight-semibold mb-4">
+                      Fakturační údaje
+                    </p>
+                    <div className="mb-5">
+                      <ShippingForm
+                        firstName={this.state.firstName}
+                        lastName={this.state.lastName}
+                        customerEmail={this.state["customer[email]"]}
+                        shippingOptions={PAYNMENT_METHODS}
+                        selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
+                        selectedShippingOption={selectedShippingOption}
+                        shippingStreet={this.state["shipping[street]"]}
+                        shippingTownCity={this.state["shipping[town_city]"]}
+                        shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
+                        orderNotes={this.state.orderNotes}
+                      />
+                    </div>
+
+                    <p className="checkout-error">
+                      {!selectedShippingOption ? "Vyberte platební metodu!" : ""}
+                    </p>
+                    {customer ? (
+                      <button
+                        type="submit"
+                        className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
+                        disabled={!selectedShippingOption}
+                        onClick={this.captureOrder}
+                      >
+                        Odeslat objednávku
+                      </button>
+                    ) : null}
+                  </form>
+                )}
               </div>
-              {this.isNotCartEmpty(cart) && (
-                <form onChange={this.handleChangeForm}>
-                  {/* ShippingDetails */}
-                  <p className="font-size-subheader font-weight-semibold mb-4">Fakturační údaje</p>
-                  <div className="mb-5">
-                    <ShippingForm
-                      firstName={this.state.firstName}
-                      lastName={this.state.lastName}
-                      customerEmail={this.state["customer[email]"]}
-                      shippingOptions={PAYNMENT_METHODS}
-                      selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
-                      selectedShippingOption={selectedShippingOption}
-                      shippingStreet={this.state["shipping[street]"]}
-                      shippingTownCity={this.state["shipping[town_city]"]}
-                      shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
-                      orderNotes={this.state.orderNotes}
-                    />
+
+              <div className="col-12 col-lg-5 col-md-10 offset-md-1">
+                <div className="bg-brand200 p-5 checkout-summary">
+                  <div className="borderbottom font-size-subheader border-color-gray400 pb-2 font-weight-medium">
+                    Souhrn objednávky
+                  </div>
+                  <div className="pt-3 borderbottom border-color-gray400">
+                    {(this.isNotCartEmpty(cart) ? cart.line_items : []).map((item) => {
+                      return (
+                        <div key={item.id} className="d-flex mb-2">
+                          {item && item.media && (
+                            <img
+                              className="checkout__line-item-image mr-2"
+                              src={item.media.source}
+                              alt={item.product_name}
+                            />
+                          )}
+                          <div className="d-flex flex-grow-1">
+                            <div className="flex-grow-1">
+                              <p className="font-weight-medium">{item.product_name}</p>
+                              <p className="font-color-light">Počet ks: {item.quantity}</p>
+                            </div>
+                            <div className="text-right font-weight-semibold">
+                              {item.line_total.formatted} Kč
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <div className="py-3 borderbottom border-color-black">
+                    {[
+                      {
+                        name: "Mezisoučet",
+                        amount: this.isNotCartEmpty(cart) ? cart.subtotal.formatted + " Kč" : "",
+                      },
+                      {
+                        name: "DPH 21%",
+                        amount: taxPrice + " Kč",
+                      },
+                      {
+                        name: "Platební metoda",
+                        amount: selectedShippingOption
+                          ? `${selectedShippingOption.id} - ${selectedShippingOption.price}` + " Kč"
+                          : "Nic nebylo vybráno",
+                      },
+                    ].map((item, i) => (
+                      <div
+                        key={i}
+                        className="d-flex justify-content-between align-items-center mb-2"
+                      >
+                        <p>{item.name}</p>
+                        <p className="text-right font-weight-medium">{item.amount}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="d-flex justify-content-between align-items-center mb-2 pt-3">
+                    <p className="font-size-title font-weight-semibold">Celkově</p>
+                    <p className="text-right font-weight-semibold font-size-title">
+                      {this.isNotCartEmpty(cart) ? totalSum : ""} Kč
+                    </p>
                   </div>
 
-                  <p className="checkout-error">
-                    {!selectedShippingOption ? "Vyberte platební metodu!" : ""}
-                  </p>
                   {customer ? (
                     <button
                       type="submit"
-                      className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
-                      disabled={!selectedShippingOption}
+                      className="bg-black mt-4 font-color-white w-100 border-none h-56 font-weight-semibold d-lg-none"
                       onClick={this.captureOrder}
+                      disabled={!selectedShippingOption}
                     >
                       Odeslat objednávku
                     </button>
                   ) : null}
-                </form>
-              )}
-            </div>
-
-            <div className="col-12 col-lg-5 col-md-10 offset-md-1">
-              <div className="bg-brand200 p-5 checkout-summary">
-                <div className="borderbottom font-size-subheader border-color-gray400 pb-2 font-weight-medium">
-                  Souhrn objednávky
                 </div>
-                <div className="pt-3 borderbottom border-color-gray400">
-                  {(this.isNotCartEmpty(cart) ? cart.line_items : []).map((item) => {
-                    return (
-                      <div key={item.id} className="d-flex mb-2">
-                        {item && item.media && (
-                          <img
-                            className="checkout__line-item-image mr-2"
-                            src={item.media.source}
-                            alt={item.product_name}
-                          />
-                        )}
-                        <div className="d-flex flex-grow-1">
-                          <div className="flex-grow-1">
-                            <p className="font-weight-medium">{item.product_name}</p>
-                            <p className="font-color-light">Počet ks: {item.quantity}</p>
-                          </div>
-                          <div className="text-right font-weight-semibold">
-                            {item.line_total.formatted} Kč
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <div className="py-3 borderbottom border-color-black">
-                  {[
-                    {
-                      name: "Mezisoučet",
-                      amount: this.isNotCartEmpty(cart) ? cart.subtotal.formatted + " Kč" : "",
-                    },
-                    {
-                      name: "DPH 21%",
-                      amount: taxPrice + " Kč",
-                    },
-                    {
-                      name: "Platební metoda",
-                      amount: selectedShippingOption
-                        ? `${selectedShippingOption.id} - ${selectedShippingOption.price}` + " Kč"
-                        : "Nic nebylo vybráno",
-                    },
-                  ].map((item, i) => (
-                    <div key={i} className="d-flex justify-content-between align-items-center mb-2">
-                      <p>{item.name}</p>
-                      <p className="text-right font-weight-medium">{item.amount}</p>
-                    </div>
-                  ))}
-                </div>
-                <div className="d-flex justify-content-between align-items-center mb-2 pt-3">
-                  <p className="font-size-title font-weight-semibold">Celkově</p>
-                  <p className="text-right font-weight-semibold font-size-title">
-                    {this.isNotCartEmpty(cart) ? totalSum : ""} Kč
-                  </p>
-                </div>
-
-                {customer ? (
-                  <button
-                    type="submit"
-                    className="bg-black mt-4 font-color-white w-100 border-none h-56 font-weight-semibold d-lg-none"
-                    onClick={this.captureOrder}
-                    disabled={!selectedShippingOption}
-                  >
-                    Odeslat objednávku
-                  </button>
-                ) : null}
               </div>
             </div>
           </div>
-        </div>
-      </Root>
-    );
+        </Root>
+      );
+    } else {
+      return <h4>Pouze pro registrované!</h4>;
+    }
   }
 }
 
