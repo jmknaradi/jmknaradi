@@ -290,7 +290,7 @@ class CheckoutPage extends Component {
     return cart && cart.total_items !== 0;
   }
 
-  recountCartPrices(customer, products, cart) {
+  recountCartPrices(customer, products, cart, selectedShippingOption) {
     const customerDiscounts = customer.external_id.split("-");
     let subtotal = 0;
     if (this.isNotCartEmpty(cart)) {
@@ -307,93 +307,68 @@ class CheckoutPage extends Component {
         subtotal += totalDiscountPrice;
         return item;
       });
+      const taxPrice = Math.round(subtotal * 0.21);
+      const totalSum = Math.round(subtotal + Number(taxPrice) + Number(selectedShippingOption.price));
       cart.subtotal.formatted = subtotal;
+      cart.taxPrice = taxPrice;
+      cart.totalSum = totalSum;
     }
   }
 
-  handleSubmit(e, cart) {
+  handleSubmit = (e) => {
     const encode = (data) => {
-      console.log(data);
       return Object.keys(data)
           .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
           .join("&");
     }
-    console.log(cart);
-    /*const body = {
+    const items = this.props.cart.line_items.map(item => {
+      return {
+        product: item.product_name, 
+        quantity: item.quantity,
+        originalPrice: item.price.raw, 
+        discountPrice: item.discountPrice,
+        discountPercentage: item.discountPercentage,
+        total: item.line_total.formatted
+      }
+    });
+    const body = {
       formName: "order",
       name: this.state.firstName,
       address: this.state.lastName,
       ico: this.state.ico,
       dic: this.state.dic,
-      phone: this.state.phone
+      phone: this.state.phone,
+      cart: {
+        taxes: this.props.cart.taxPrice,
+        totalPriceWithTaxes: this.props.cart.totalSum,
+        items: items
+      }
     };
-    console.log(body);
-    console.log(encode({ "form-name": "order", body }));*/
-    /*
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({ "form-name": "order", ...this.state })
+      body: encode({ body })
     })
       .then(() => alert("Success!"))
       .catch(error => alert(error));
-      */
     e.preventDefault();
   };
 
   render() {
     const { customer, products, cart } = this.props;
-    if (customer) {
-      this.recountCartPrices(customer, products, cart);
+    if (customer && this.isNotCartEmpty(cart)) {
       const selectedShippingOption = PAYNMENT_METHODS.find(
         ({ id }) => id === this.state["fulfillment[shipping_method]"]
       );
+      this.recountCartPrices(customer, products, cart, selectedShippingOption);
       if (this.state.loading) {
         return <Loader />;
       }
-      const taxPrice = this.isNotCartEmpty(cart) ? cart.subtotal.formatted * 0.21 : "";
-      const totalSum = this.isNotCartEmpty(cart)
-        ? Number(cart.subtotal.formatted) + Number(taxPrice) + Number(selectedShippingOption.price)
-        : "";
       return (
         <Root>
           <Head>
             <title>Objednávka</title>
           </Head>
-          <form name="order" method="POST" data-netlify="true" onChange={this.handleChangeForm} hidden>
-                    <input type="hidden" name="form-name" value="order" />
-                    {/* ShippingDetails */}
-                    <p className="font-size-subheader font-weight-semibold mb-4">
-                      Fakturační údaje
-                    </p>
-                    <div className="mb-5">
-                      <ShippingForm
-                        firstName={this.state.firstName}
-                        lastName={this.state.lastName}
-                        customerEmail={this.state["customer[email]"]}
-                        shippingOptions={PAYNMENT_METHODS}
-                        selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
-                        selectedShippingOption={selectedShippingOption}
-                        ico={this.state.ico}
-                        shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
-                        phone={this.state.phone}
-                        orderNotes={this.state.orderNotes}
-                      />
-                    </div>
-
-                    <p className="checkout-error">
-                      {!selectedShippingOption ? "Vyberte platební metodu!" : ""}
-                    </p>
-                    {customer ? (
-                      <button
-                        type="submit"
-                        className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
-                        disabled={true}
-                      >
-                        Odeslat objednávku
-                      </button>
-                    ) : null}
-                  </form>
           <div className="custom-container py-5 my-4 my-sm-5">
             {/* Row */}
             <div className="row mt-4">
@@ -411,7 +386,7 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                 <form name="order" method="POST" data-netlify="true" onSubmit={(e) => this.handleSubmit(e, cart)} onChange={this.handleChangeForm}>
+                 <form name="order" method="POST" data-netlify="true" onSubmit={this.handleSubmit} onChange={this.handleChangeForm}>
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
@@ -439,7 +414,7 @@ class CheckoutPage extends Component {
                       <button
                         type="submit"
                         className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
-                        disabled={true}
+                        disabled={!selectedShippingOption}
                       >
                         Odeslat objednávku
                       </button>
@@ -485,7 +460,7 @@ class CheckoutPage extends Component {
                       },
                       {
                         name: "DPH 21%",
-                        amount: taxPrice + " Kč",
+                        amount: this.isNotCartEmpty(cart) ? cart.taxPrice + " Kč" : "",
                       },
                       {
                         name: "Platební metoda",
@@ -506,7 +481,7 @@ class CheckoutPage extends Component {
                   <div className="d-flex justify-content-between align-items-center mb-2 pt-3">
                     <p className="font-size-title font-weight-semibold">Celkově</p>
                     <p className="text-right font-weight-semibold font-size-title">
-                      {this.isNotCartEmpty(cart) ? totalSum : ""} Kč
+                      {this.isNotCartEmpty(cart) ? cart.totalSum : ""} Kč
                     </p>
                   </div>
 
@@ -515,7 +490,7 @@ class CheckoutPage extends Component {
                       type="submit"
                       className="bg-black mt-4 font-color-white w-100 border-none h-56 font-weight-semibold d-lg-none"
                       onClick={this.handleSubmit}
-                      disabled={true}
+                      disabled={!selectedShippingOption}
                     >
                       Odeslat objednávku
                     </button>
