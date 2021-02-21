@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import ProductCard from '../products/ProductCard';
 
 class ProductRow extends Component {
+  
   render() {
     const { products } = this.props;
+    const { customer } = this.props;
     const reg = /(<([^>]+)>)/ig;
 
     return (
@@ -16,7 +18,7 @@ class ProductRow extends Component {
               permalink={permalink}
               image={media.source}
               name={name}
-              price={price.formatted_with_symbol}
+              price={customer ? price.formatted + " Kč" : ""}
               description={description && description.replace(reg, '')}
             />
           </div>

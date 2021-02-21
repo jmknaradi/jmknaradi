@@ -18,7 +18,7 @@ export default class BillingDetails extends Component {
     return (
       <>
         <p className="font-size-subheader font-weight-semibold mb-3">
-          Billing Address
+          Fakturační adresa
         </p>
         <div className="border border-color-gray400 mb-5">
           {options.map((value, index) => (

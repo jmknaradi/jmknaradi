@@ -58,10 +58,6 @@ class Product extends Component {
         <div className="main-product-content">
           {/* Sidebar */}
           <div className="product-sidebar">
-            <CategoryList
-              className="product-left-aside__category-list"
-              current={ product.categories[0] && product.categories[0].id }
-            />
             <CarouselImages images={images} />
           </div>
 
@@ -82,45 +78,9 @@ class Product extends Component {
           {/* Right Section - Product Details */}
           <div className="product-detail">
             <ProductDetail product={product} />
-
-            <div
-              onClick={this.toggleShipping}
-              className="d-flex cursor-pointer py-3 justify-content-between font-weight-medium"
-            >
-              Shipping and returns
-              <img src="/icon/plus.svg" />
-            </div>
-            <Collapse isOpened={showShipping}>
-              <div className="pb-4 font-color-medium">
-                Arrives in 5 to 7 days, returns accepted within 30
-                days. For more information, click here.
-              </div>
-            </Collapse>
-            <div className="h-1 border-bottom border-color-black" />
-            <div
-              onClick={this.toggleDetails}
-              className="d-flex cursor-pointer py-3 justify-content-between font-weight-medium"
-            >
-              Details
-              <img src="/icon/plus.svg" />
-            </div>
-            <Collapse isOpened={showDetails}>
-              <div
-                className="pb-4 font-color-medium"
-                dangerouslySetInnerHTML={{
-                  __html: detailView
-                }}
-              />
-            </Collapse>
-            <div className="h-1 borderbottom border-color-black" />
           </div>
         </div>
       </div>
-
-      <ClientReview />
-      <SuggestedProducts />
-      <ExploreBanner />
-      <SocialMedia />
       <Footer />
     </Root>
     );

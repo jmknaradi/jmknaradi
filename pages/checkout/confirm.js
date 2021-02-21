@@ -10,7 +10,7 @@ function Confirm() {
   return (
     <>
       <Head>
-        <title>Order | commerce</title>
+        <title>Objednávka | jmk nářadí</title>
       </Head>
       <OrderConfirm />
     </>

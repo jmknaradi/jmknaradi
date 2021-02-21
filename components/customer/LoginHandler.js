@@ -87,7 +87,7 @@ class LoginHandler extends Component {
         this.setState({
           isError: false,
           message: [
-            'If that email address exists in our system, we\'ve just sent you a link to continue logging in!'
+            'Jestliže tato adresa existuje v našem systému, zašleme Vám odkaz přes který se budete moct přihlásit do systému!'
           ]
         });
       })
@@ -150,7 +150,7 @@ class LoginHandler extends Component {
           type="submit"
           onClick={this.loginCustomer}
         >
-          Get magic link
+          Získat přihlašovací odkaz
         </button>
       </form>
     );
@@ -180,7 +180,7 @@ class LoginHandler extends Component {
             <div className="col-12 col-md-6 col-lg-6 offset-lg-3 offset-md-3  row-content text-center">
               <div className="py-5 px-4 px-sm-5">
                 <h2 className="font-size-header mb-4">
-                  Login
+                  Přihlásit se
                 </h2>
                 { this.renderAlert() }
                 { this.renderForm() }

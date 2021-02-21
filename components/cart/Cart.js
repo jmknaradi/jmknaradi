@@ -56,9 +56,30 @@ class Cart extends Component {
     enableBodyScroll(this.cartScroll.current);
   }
 
+  recountCartPrices(customer, products, cart) {
+    const customerDiscounts = customer.external_id.split("-");
+    let subtotal = 0;
+    cart.line_items.map(item => {
+      const product = products.find(product => product.id === item.product_id);
+      const category = product.categories[0].slug;
+      const discountPercentage = customerDiscounts[category];
+      const discountPrice = product.price.formatted * (1 - (discountPercentage / 100));
+      const totalDiscountPrice = item.quantity * discountPrice;
+
+      item.discountPercentage = discountPercentage;
+      item.discountPrice = discountPrice;
+      item.line_total.formatted = totalDiscountPrice;
+      subtotal += totalDiscountPrice;
+      return item;
+    });
+    cart.subtotal.formatted = subtotal;
+  }
+
   render() {
     const { isOpen, toggle } = this.props;
     const { cart } = this.props;
+    const { customer } = this.props;
+    const { products } = this.props;
 
     return (
       <Transition
@@ -91,7 +112,7 @@ class Cart extends Component {
               <div className="px-4 px-md-5">
                 <div className="pt-4 pb-3 borderbottom border-color-black d-flex justify-content-between align-items-center">
                   <p className="font-family-secondary font-size-subheader">
-                    Shopping Cart
+                    Nákupní košík
                   </p>
                   <button
                     className="bg-transparent p-0"
@@ -107,6 +128,7 @@ class Cart extends Component {
                     className="flex-grow-1 overflow-auto pt-4"
                     ref={this.cartScroll}
                   >
+                    {this.recountCartPrices(customer, products, cart)}
                     {cart.line_items.map(item => (
                       <CartItem
                         key={item.id}
@@ -118,22 +140,22 @@ class Cart extends Component {
                   <div className="cart-footer">
                     <div className="mb-3 d-flex">
                       <p className="font-color-light mr-2 font-weight-regular">
-                        Subtotal:
+                        Mezisoučet:
                       </p>
-                      <p>{cart.subtotal.formatted_with_symbol}</p>
+                      <p>{cart.subtotal.formatted} Kč</p>
                     </div>
                     <div className="row">
                       <div className="col-6 d-none d-md-block">
                         <Link href="/collection">
                           <a className="h-56 d-flex align-items-center justify-content-center border border-color-black bg-white w-100 flex-grow-1 font-weight-medium font-color-black px-3">
-                            Continue Shopping
+                            Pokračovat v nakupování
                           </a>
                         </Link>
                       </div>
                       <div className="col-12 col-md-6">
                         <Link href="/checkout">
                           <a className="h-56 d-flex align-items-center justify-content-center bg-black w-100 flex-grow-1 font-weight-medium font-color-white px-3">
-                            Checkout
+                            K objednávce
                           </a>
                         </Link>
                       </div>
@@ -152,7 +174,7 @@ class Cart extends Component {
                     </div>
                   </div>
                   <p className="text-center font-weight-medium">
-                    Your cart is empty
+                    Váš košík je prázdný
                   </p>
                 </div>
               )}

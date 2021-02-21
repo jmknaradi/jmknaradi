@@ -15,10 +15,6 @@ export default function ProductCard({ permalink, image, name, description, price
         <p className="font-size-subheader mb-2 font-weight-medium">
           {name}
         </p>
-        <p className="mb-2 font-color-medium">{description}</p>
-        <p className="font-size-subheader font-weight-medium pb-2 borderbottom border-color-black">
-          {price}
-        </p>
       </a>
     </Link>
   );

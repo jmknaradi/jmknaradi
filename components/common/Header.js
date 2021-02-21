@@ -25,16 +25,8 @@ const transitionStyles = {
 
 const mobileMenuLinks = [
   {
-    name: 'Home',
-    link: '/'
-  },
-  {
-    name: 'Shop',
+    name: 'Obchod',
     link: '/collection'
-  },
-  {
-    name: 'About',
-    link: '/about'
   }
 ];
 
@@ -143,12 +135,12 @@ class Header extends Component {
         <div className="d-flex align-items-center">
           { customer && customer.firstname && (
             <span className="mr-2 font-weight-regular">
-              Hi, { customer.firstname }!
+              { customer.firstname }!
             </span>
           ) }
           <Link href="/account">
             <a className="font-color-black mx-2">
-              My account
+              Můj účet
             </a>
           </Link>
           <button
@@ -156,7 +148,7 @@ class Header extends Component {
             type="button"
             onClick={this.handleLogout}
           >
-            Logout
+            Odhlásit
           </button>
         </div>
       );
@@ -165,7 +157,7 @@ class Header extends Component {
     return (
       <Link href="/login">
         <a className="font-color-black login">
-          Login
+          Přihlásit se jako partner
         </a>
       </Link>
     );
@@ -174,10 +166,11 @@ class Header extends Component {
   render() {
     const { showMobileMenu, showCart } = this.state;
     const { transparent, cart } = this.props;
+    const { loggedIn } = this.state;
 
     return (
       <header className="position-fixed top-0 left-0 right-0 font-weight-semibold no-print">
-        <Cart isOpen={showCart} toggle={value => this.toggleCart(value)} />
+        {loggedIn ? (<Cart isOpen={showCart} toggle={value => this.toggleCart(value)} />) : null}
         <div
           ref={this.header}
           className={`d-flex header align-items-center justify-content-between position-relative ${
@@ -186,12 +179,7 @@ class Header extends Component {
         >
           <div className="d-none d-sm-flex">
             <Link href="/collection">
-              <a href="/collection" className="mr-4 font-color-black">Shop</a>
-            </Link>
-            <Link href="/about">
-              <a href="/about" className="font-color-black">
-                About
-              </a>
+              <a href="/collection" className="mr-4 font-color-black">Obchod</a>
             </Link>
           </div>
           <div className="logo-container">
@@ -202,18 +190,12 @@ class Header extends Component {
               alt="Menu icon"
             />
             <Link href="/">
-              <a>
-                <img
-                  src="/images/commerce.svg"
-                  className="logo cursor-pointer"
-                  alt="Logo"
-                />
-              </a>
+              <h4 style={{cursor: 'pointer'}} className="font-family: Sacramento">jmknářadí.cz</h4>
             </Link>
           </div>
           <div className="d-flex">
             { process.browser && this.renderLoginLogout() }
-            <div
+            {loggedIn ? (<div
               className="position-relative cursor-pointer"
               onClick={this.toggleCart}
             >
@@ -221,7 +203,7 @@ class Header extends Component {
               <div className="cart-count position-absolute font-size-tiny font-weight-bold">
                 {cart.total_items}
               </div>
-            </div>
+            </div>) : null} 
           </div>
         </div>
 

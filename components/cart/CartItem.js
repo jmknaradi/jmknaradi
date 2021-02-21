@@ -26,7 +26,7 @@ class CartItem extends Component {
 
   render() {
     const { item } = this.props;
-
+    {console.log(item)}
     return (
       <div className="px-4 px-md-5 mb-2">
         <div className="cart-item d-flex">
@@ -38,7 +38,9 @@ class CartItem extends Component {
             <div className="d-flex justify-content-between mb-2">
               <p>{item.name}</p>
               <p className="text-right font-weight-medium">
-                {item.line_total.formatted_with_symbol}
+                Původní cena: <del>{item.price.raw * item.quantity} Kč</del><br />
+                Sleva: {item.discountPercentage} %<br />
+                Vaše cena: {item.discountPrice * item.quantity} Kč
               </p>
             </div>
             <div className="d-flex justify-content-between mb-2">
@@ -59,7 +61,7 @@ class CartItem extends Component {
                 </button>
               </div>
               <p className="text-right text-decoration-underline font-color-medium cursor-pointer" onClick={() => this.handleRemoveFromCart(item.id)}>
-                Remove
+                Odstranit
               </p>
             </div>
           </div>
