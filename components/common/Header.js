@@ -190,7 +190,7 @@ class Header extends Component {
               alt="Menu icon"
             />
             <Link href="/">
-              <h4 style={{cursor: 'pointer'}} className="font-family: Sacramento">jmknářadí.cz</h4>
+              <h4 style={{cursor: 'pointer'}} className="font-family: Sacramento">JMKnářadí.cz</h4>
             </Link>
           </div>
           <div className="d-flex">
