@@ -351,9 +351,11 @@ class CheckoutPage extends Component {
       <input type="text" name="shipping[street]" />
       <input type="text" name="dic" />
       <input type="text" name="lastName" />
-      <input type="email" name="customer[email]" />
+      <input type="text" name="phone" />
+      <input type="text" name="customer[email]" />
       <select name="fulfillment[shipping_method]" />
       <textarea name="orderNotes"></textarea>
+      <button type="submit"></button>
     </form>
           <div className="custom-container py-5 my-4 my-sm-5">
             {/* Row */}
