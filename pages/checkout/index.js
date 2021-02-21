@@ -364,7 +364,7 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                 <form name="order" onSubmit={this.handleSubmit} onChange={this.handleChangeForm} netlify>
+                 <form name="order" method="post" data-netlify="true" onSubmit={this.handleSubmit} onChange={this.handleChangeForm}>
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
