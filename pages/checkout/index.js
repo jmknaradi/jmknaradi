@@ -314,25 +314,6 @@ class CheckoutPage extends Component {
     }
   }
 
-  recountCartPrices(customer, products, cart) {
-    const customerDiscounts = customer.external_id.split("-");
-    let subtotal = 0;
-    cart.line_items.map((item) => {
-      const product = products.find((product) => product.id === item.product_id);
-      const category = product.categories[0].slug;
-      const discountPercentage = customerDiscounts[category];
-      const discountPrice = product.price.formatted * (1 - discountPercentage / 100);
-      const totalDiscountPrice = item.quantity * discountPrice;
-
-      item.discountPercentage = discountPercentage;
-      item.discountPrice = discountPrice;
-      item.line_total.formatted = totalDiscountPrice;
-      subtotal += totalDiscountPrice;
-      return item;
-    });
-    cart.subtotal.formatted = subtotal;
-  }
-
   render() {
     const { customer, products, cart } = this.props;
     this.recountCartPrices(customer, products, cart);
