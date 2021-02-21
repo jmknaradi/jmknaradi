@@ -399,8 +399,10 @@ class CheckoutPage extends Component {
                         lastName={this.state.lastName}
                         customerEmail={this.state["customer[email]"]}
                         shippingOptions={PAYNMENT_METHODS}
-                        selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
                         selectedShippingOption={selectedShippingOption}
+                        ico={this.state.ico}
+                        phone={this.state.phone}
+                        dic={this.state.dic}
                         orderNotes={this.state.orderNotes}
                       />
                     </div>

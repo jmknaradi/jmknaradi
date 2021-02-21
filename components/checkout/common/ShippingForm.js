@@ -14,13 +14,13 @@ export default class ShippingForm extends Component {
 
   render() {
     const {
-      shippingOptions,
-      selectedShippingOption,
       firstName,
       lastName,
+      customerEmail,
+      shippingOptions,
+      selectedShippingOption,
       ico,
       phone,
-      customerEmail,
       dic,
       orderNotes,
     } = this.props;
