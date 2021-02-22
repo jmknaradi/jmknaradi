@@ -10,7 +10,7 @@ class ProductRow extends Component {
     const reg = /(<([^>]+)>)/ig;
 
     return (
-      <div className="row mb-5">
+      <div className="row">
         {products.map(({ id, permalink, media, name, price, description }) => (
           <div key={id} className="col-6 col-sm-6 col-lg-3">
             <ProductCard

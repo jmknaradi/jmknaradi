@@ -25,8 +25,8 @@ const transitionStyles = {
 
 const mobileMenuLinks = [
   {
-    name: 'Obchod',
-    link: '/collection'
+    name: 'JMKnářadí.cz',
+    link: '/'
   }
 ];
 
@@ -178,8 +178,8 @@ class Header extends Component {
           }`}
         >
           <div className="d-none d-sm-flex">
-            <Link href="/collection">
-              <a href="/collection" className="mr-4 font-color-black">Obchod</a>
+          <Link href="/">
+              <h4 style={{cursor: 'pointer'}} className="font-family: Sacramento">JMKnářadí.cz</h4>
             </Link>
           </div>
           <div className="logo-container">
@@ -189,9 +189,7 @@ class Header extends Component {
               className="w-32 mr-1 d-block d-sm-none"
               alt="Menu icon"
             />
-            <Link href="/">
-              <h4 style={{cursor: 'pointer'}} className="font-family: Sacramento">JMKnářadí.cz</h4>
-            </Link>
+            
           </div>
           <div className="d-flex">
             { process.browser && this.renderLoginLogout() }

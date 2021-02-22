@@ -10,7 +10,7 @@ class ProductsBanner extends Component {
     const { customer } = this.props;
 
     return (
-      <div className="custom-container py-5 my-5">
+      <div className="custom-container pt-5 mt-5">
         <ProductRow products={products} customer={customer}/>  
       </div>
     );
