@@ -379,16 +379,15 @@ class CheckoutPage extends Component {
                       Fakturační údaje
                     </p>
                     <div className="mb-5">
-                      <ShippingForm
+                    <ShippingForm
                         firstName={this.state.firstName}
                         lastName={this.state.lastName}
                         customerEmail={this.state["customer[email]"]}
                         shippingOptions={PAYNMENT_METHODS}
-                        selectedShippingOptionId={this.state["fulfillment[shipping_method]"]}
                         selectedShippingOption={selectedShippingOption}
-                        shippingStreet={this.state["shipping[street]"]}
-                        shippingTownCity={this.state["shipping[town_city]"]}
-                        shippingPostalZipCode={this.state["shipping[postal_zip_code]"]}
+                        ico={this.state.ico}
+                        phone={this.state.phone}
+                        dic={this.state.dic}
                         orderNotes={this.state.orderNotes}
                       />
                     </div>
