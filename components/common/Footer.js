@@ -2,7 +2,21 @@ import React from "react";
 
 const Footer = () => (
   <footer className="pt-5">
-    <div className="custom-container mb-5 pb-5 pt-5" style={{display: "none"}}>
+    <form name="order" data-netlify="true" hidden>
+      <input type="hidden" name="form-name" value="order" />
+      <input name="firstName" />
+      <input name="ico" />
+      <input name="dic" />
+      <input name="lastName" />
+      <input name="phone" />
+      <input name="customerEmail" />
+      <select name="shippingMethod"></select>
+      <textarea name="orderNotes" />
+      <input name="taxPrice" />
+      <input name="totalPriceWithTaxes" />
+      <input name="items" />
+    </form>
+    <div className="custom-container mb-5 pb-5 pt-5" style={{ display: "none" }}>
       <div className="row">
         <div className="col-12 col-sm-6 col-md-4">
           <p className="font-family-secondary font-size-display1 mb-4">Kde lze nakoupit</p>
