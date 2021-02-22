@@ -415,7 +415,6 @@ class CheckoutPage extends Component {
                     name="order"
                     method="POST"
                     data-netlify="true"
-                    onSubmit={this.handleSubmit}
                     onChange={this.handleChangeForm}
                   >
                     <input type="hidden" name="form-name" value="order" />
