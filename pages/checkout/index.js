@@ -40,7 +40,7 @@ class CheckoutPage extends Component {
       // e.g error { param: "shipping[name]"}
       firstName: "",
       lastName: "",
-      "customer[email]": "",
+      customerEmail: "",
       "customer[id]": null,
       "shipping[name]": "",
       ico: "",
@@ -48,13 +48,13 @@ class CheckoutPage extends Component {
       dic: "",
       orderNotes: "",
 
-      "fulfillment[shipping_method]": "Platba předem",
+      shippingMethod: "Platba předem",
       billingPostalZipcode: "",
 
       errors: {
-        "fulfillment[shipping_method]": null,
+        shippingMethod: null,
         gateway_error: null,
-        "customer[email]": null,
+        customerEmail: null,
         "shipping[name]": null,
         "shipping[street]": null,
         "shipping[postal_zip_code]": null,
@@ -88,7 +88,7 @@ class CheckoutPage extends Component {
     ) {
       // reset selected shipping option
       this.setState({
-        "fulfillment[shipping_method]": "",
+        shippingMethod: "",
       });
     }
 
@@ -111,7 +111,7 @@ class CheckoutPage extends Component {
 
     // Build a some new state to use with "setState" below
     const newState = {
-      "customer[email]": customer.email,
+      customerEmail: customer.email,
       "customer[id]": customer.id,
     };
 
@@ -201,7 +201,7 @@ class CheckoutPage extends Component {
       this.setState({
         errors: {
           ...this.state.errors,
-          [error.type === "not_valid" ? "fulfillment[shipping_method]" : error.type]: error.message,
+          [error.type === "not_valid" ? shippingMethod : error.type]: error.message,
         },
       });
       errorToAlert = error.message;
@@ -224,7 +224,7 @@ class CheckoutPage extends Component {
     // reset error states
     this.setState({
       errors: {
-        "fulfillment[shipping_method]": null,
+        shippingMethod: null,
         gateway_error: null,
         "shipping[name]": null,
         "shipping[street]": null,
@@ -247,7 +247,7 @@ class CheckoutPage extends Component {
       customer: {
         firstname: this.state.firstName,
         lastname: this.state.lastName,
-        email: this.state["customer[email]"],
+        email: this.state.customerEmail,
       },
       // collected 'order notes' data for extra field configured in the Chec Dashboard
       extrafields: {
@@ -309,7 +309,9 @@ class CheckoutPage extends Component {
         return item;
       });
       const taxPrice = Math.round(subtotal * 0.21);
-      const totalSum = Math.round(subtotal + Number(taxPrice) + Number(selectedShippingOption.price));
+      const totalSum = Math.round(
+        subtotal + Number(taxPrice) + Number(selectedShippingOption.price)
+      );
       cart.subtotal.formatted = subtotal;
       cart.taxPrice = taxPrice;
       cart.totalSum = totalSum;
@@ -318,20 +320,19 @@ class CheckoutPage extends Component {
 
   handleSubmit = (e) => {
     const encode = (data) => {
-      console.log(data);
       return Object.keys(data)
-          .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-          .join("&");
-    }
-    const items = this.props.cart.line_items.map(item => {
+        .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+        .join("&");
+    };
+    const items = this.props.cart.line_items.map((item) => {
       return {
-        product: item.product_name, 
+        product: item.product_name,
         quantity: item.quantity,
-        originalPrice: item.price.raw, 
+        originalPrice: item.price.raw,
         discountPrice: item.discountPrice,
         discountPercentage: item.discountPercentage,
-        total: item.line_total.formatted
-      }
+        total: item.line_total.formatted,
+      };
     });
     const body = {
       formName: "order",
@@ -343,26 +344,46 @@ class CheckoutPage extends Component {
       cart: {
         taxes: this.props.cart.taxPrice,
         totalPriceWithTaxes: this.props.cart.totalSum,
-        items: items
+        items: items,
       },
-      shippingMethod: this.state["fulfillment[shipping_method]"]
+      shippingMethod: this.state.shippingMethod,
     };
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({ "form-name": "order", ...body })
+      body: encode({ "form-name": "order", ...body }),
     })
       .then(() => alert("Success!"))
-      .catch(error => alert(error));
-      
+      .catch((error) => alert(error));
+
     e.preventDefault();
   };
+
+  getHiddenFields() {
+    const items = this.props.cart.line_items.map((item) => {
+      return {
+        product: item.product_name,
+        quantity: item.quantity,
+        originalPrice: item.price.raw,
+        discountPrice: item.discountPrice,
+        discountPercentage: item.discountPercentage,
+        total: item.line_total.formatted,
+      };
+    });
+    return (
+      <>
+        <input name="taxPrice" value={this.props.cart.taxPrice} hidden />
+        <input name="totalPriceWithTaxes" value={this.props.cart.totalSum} hidden />
+        <input name="items" value={items} hidden />
+      </>
+    );
+  }
 
   render() {
     const { customer, products, cart } = this.props;
     if (customer && this.isNotCartEmpty(cart)) {
       const selectedShippingOption = PAYNMENT_METHODS.find(
-        ({ id }) => id === this.state["fulfillment[shipping_method]"]
+        ({ id }) => id === this.state.shippingMethod
       );
       this.recountCartPrices(customer, products, cart, selectedShippingOption);
       if (this.state.loading) {
@@ -390,7 +411,13 @@ class CheckoutPage extends Component {
                   </div>
                 </div>
                 {this.isNotCartEmpty(cart) && (
-                 <form name="order" method="POST" data-netlify="true" onSubmit={this.handleSubmit} onChange={this.handleChangeForm}>
+                  <form
+                    name="order"
+                    method="POST"
+                    data-netlify="true"
+                    onSubmit={this.handleSubmit}
+                    onChange={this.handleChangeForm}
+                  >
                     <input type="hidden" name="form-name" value="order" />
                     {/* ShippingDetails */}
                     <p className="font-size-subheader font-weight-semibold mb-4">
@@ -400,7 +427,7 @@ class CheckoutPage extends Component {
                       <ShippingForm
                         firstName={this.state.firstName}
                         lastName={this.state.lastName}
-                        customerEmail={this.state["customer[email]"]}
+                        customerEmail={this.state.customerEmail}
                         shippingOptions={PAYNMENT_METHODS}
                         selectedShippingOption={selectedShippingOption}
                         ico={this.state.ico}
@@ -422,6 +449,7 @@ class CheckoutPage extends Component {
                         Odeslat objednávku
                       </button>
                     ) : null}
+                    {this.getHiddenFields()}
                   </form>
                 )}
               </div>

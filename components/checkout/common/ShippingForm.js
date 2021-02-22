@@ -69,7 +69,7 @@ export default class ShippingForm extends Component {
           <div className="col-12 col-sm-6 mb-3">
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Emailová adresa*</p>
-              <input name="customer[email]" value={customerEmail} className="rounded-0 w-100" required/>
+              <input name="customerEmail" value={customerEmail} className="rounded-0 w-100" required/>
             </label>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default class ShippingForm extends Component {
             <label className="w-100">
               <p className="mb-1 font-size-caption font-color-light">Platební metoda*</p>
               <Dropdown
-                name="fulfillment[shipping_method]"
+                name="shippingMethod"
                 value={selectedShippingOption ? `${selectedShippingOption.id}` : ""}
                 placeholder="Vyberte způsob platby"
               >
