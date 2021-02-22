@@ -19,6 +19,8 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import { CardElement, Elements, ElementsConsumer } from "@stripe/react-stripe-js";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 /**
  * Render the checkout page
@@ -50,6 +52,7 @@ class CheckoutPage extends Component {
 
       shippingMethod: "Platba předem",
       billingPostalZipcode: "",
+      pdf: null,
 
       errors: {
         shippingMethod: null,
@@ -348,6 +351,7 @@ class CheckoutPage extends Component {
       },
       shippingMethod: this.state.shippingMethod,
     };
+    this.printDocument();
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -374,9 +378,19 @@ class CheckoutPage extends Component {
       <>
         <input name="taxPrice" value={this.props.cart.taxPrice} hidden />
         <input name="totalPriceWithTaxes" value={this.props.cart.totalSum} hidden />
-        <input name="items" value={JSON.stringify(items)} hidden />
+        <input name="items" value={this.state.pdf} hidden />
       </>
     );
+  }
+
+  printDocument() {
+    const input = document.getElementById("toPrint");
+    html2canvas(input).then(canvas => {
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF();
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      this.setState({pdf: pdf});
+    });
   }
 
   render() {
@@ -394,7 +408,7 @@ class CheckoutPage extends Component {
           <Head>
             <title>Objednávka</title>
           </Head>
-          <div className="custom-container py-5 my-4 my-sm-5">
+          <div className="custom-container py-5 my-4 my-sm-5" id="toPrint">
             {/* Row */}
             <div className="row mt-4">
               <div className="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-0">
@@ -415,6 +429,7 @@ class CheckoutPage extends Component {
                     name="order"
                     method="POST"
                     data-netlify="true"
+                    onSubmit={this.handleSubmit}
                     onChange={this.handleChangeForm}
                   >
                     <input type="hidden" name="form-name" value="order" />
