@@ -318,6 +318,7 @@ class CheckoutPage extends Component {
 
   handleSubmit = (e) => {
     const encode = (data) => {
+      console.log(data);
       return Object.keys(data)
           .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
           .join("&");
@@ -349,7 +350,7 @@ class CheckoutPage extends Component {
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({ "form-name": "order", body })
+      body: encode({ "form-name": "order", ...body })
     })
       .then(() => alert("Success!"))
       .catch(error => alert(error));
