@@ -463,7 +463,7 @@ class CheckoutPage extends Component {
                     <p className="checkout-error">
                       {!selectedShippingOption ? "Vyberte platební metodu!" : ""}
                     </p>
-                    {this.getHiddenFields()}
+                    
                     {customer ? (
                       <button
                         type="submit"
