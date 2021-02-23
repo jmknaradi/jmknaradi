@@ -20,7 +20,7 @@ export default function LoginAnimation() {
         height={175}
         width={200}
       />
-      <h2 className="login-animation__title text-center font-family-secondary">Logging in...</h2>
+      <h2 className="login-animation__title text-center font-family-secondary">Přihlašování...</h2>
     </div>
   );
 }

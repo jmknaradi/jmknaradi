@@ -163,7 +163,7 @@ class LoginHandler extends Component {
       return (
         <Root>
           <Head>
-            <title>Logging in...</title>
+            <title>Přihlašování...</title>
           </Head>
           <LoginAnimation />
         </Root>

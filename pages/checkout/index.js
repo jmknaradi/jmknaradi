@@ -19,8 +19,6 @@ import {
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
 import { CardElement, Elements, ElementsConsumer } from "@stripe/react-stripe-js";
-import html2canvas from "html2canvas";
-import jsPDF from "jspdf";
 
 /**
  * Render the checkout page
@@ -322,6 +320,7 @@ class CheckoutPage extends Component {
   }
 
   handleSubmit = (e) => {
+    e.preventDefault();
     const encode = (data) => {
       return Object.keys(data)
         .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
@@ -351,36 +350,46 @@ class CheckoutPage extends Component {
       },
       shippingMethod: this.state.shippingMethod,
     };
-    this.printDocument();
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({ "form-name": "order", ...this.state, file: this.state.pdf }),
+      body: encode({ 
+        "form-name": "order", 
+      ...this.state, 
+      "items": this.getItems(),
+      "totalPriceWithoutTaxes": this.props.cart.subtotal.formatted,
+      "taxPrice": this.props.cart.taxPrice,
+      "totalPriceWithTaxes": this.props.cart.totalSum
+    }),
     })
       .then(() => alert("Success!"))
       .catch((error) => alert(error));
-
-    e.preventDefault();
   };
 
   getHiddenFields() {
-    const items = this.props.cart.line_items.map((item) => {
-      return {
-        product: item.product_name,
-        quantity: item.quantity,
-        originalPrice: item.price.raw,
-        discountPrice: item.discountPrice,
-        discountPercentage: item.discountPercentage,
-        total: item.line_total.formatted,
-      };
-    });
+    let items = this. getItems();
     return (
       <>
+        <input name="totalPriceWithoutTaxes" value={this.props.cart.taxPrice} hidden />
         <input name="taxPrice" value={this.props.cart.taxPrice} hidden />
         <input name="totalPriceWithTaxes" value={this.props.cart.totalSum} hidden />
         <input name="items" value={items} hidden />
       </>
     );
+  }
+
+  getItems() {
+    let items = "";
+    this.props.cart.line_items.forEach((item) => {
+      items += "<li>" + item.quantity + "x " 
+      + item.product_name + " - " 
+      + "<b>" + item.line_total.formatted + " Kč</b> (" 
+      + item.discountPercentage + "% sleva)" 
+      + " - původně " 
+      + (item.price.raw * item.quantity) 
+      + " Kč</li>";
+    });
+    return items;
   }
 
   printDocument() {
@@ -429,6 +438,7 @@ class CheckoutPage extends Component {
                     name="order"
                     method="POST"
                     data-netlify="true"
+                    onSubmit={this.handleSubmit}
                     onChange={this.handleChangeForm}
                   >
                     <input type="hidden" name="form-name" value="order" />
@@ -459,6 +469,7 @@ class CheckoutPage extends Component {
                         type="submit"
                         className="bg-black font-color-white w-100 border-none h-56 font-weight-semibold d-none d-lg-block checkout-btn"
                         disabled={!selectedShippingOption}
+                        onClick={this.handleSubmit}
                       >
                         Odeslat objednávku
                       </button>
