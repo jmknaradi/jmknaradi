@@ -378,7 +378,7 @@ class CheckoutPage extends Component {
       <>
         <input name="taxPrice" value={this.props.cart.taxPrice} hidden />
         <input name="totalPriceWithTaxes" value={this.props.cart.totalSum} hidden />
-        <input name="items" value={this.state.pdf} hidden />
+        <input name="items" value={items} hidden />
       </>
     );
   }
