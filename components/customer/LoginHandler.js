@@ -41,7 +41,7 @@ class LoginHandler extends Component {
     commerce.customer.getToken(token)
       .then(() => {
         // Fetch customer details
-        return setCustomer().then(() => Router.push('/account'));
+        return setCustomer().then(() => Router.push('/'));
       })
       .catch(() => {
         this.setState({

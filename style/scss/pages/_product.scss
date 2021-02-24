@@ -1,3 +1,18 @@
+.header-main-product-content {
+  max-width: 1440px;
+  display: flex;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  @include md-max {
+    display: block;
+  }
+
+  @include small-xs {
+    padding: 0 1.5rem;
+  }
+}
+
 .main-product-content {
   max-width: 1440px;
   display: flex;

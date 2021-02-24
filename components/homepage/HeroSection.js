@@ -18,8 +18,7 @@ const params = {
   }
 };
 const images = [
-  '/images/home-1.jpg',
-  '/images/home-2.jpg'
+  '/images/naradi.png'
 ];
 
 export default class HeroSection extends Component {
@@ -35,10 +34,10 @@ export default class HeroSection extends Component {
                   backgroundImage: `url("${image}")`
                 }}
               >
-                <p className="font-size-display5 font-family-secondary mb-4 text-center hero-header">
-                  Kalitní české nářadí
+                <p className="font-size-display5 font-family-primary mb-4 text-center hero-header">
+                  Kvalitní české nářadí ruční výroby
                 </p>
-                <Link href="/">
+                <Link href="/#products">
                   <a className="d-flex align-items-center bg-transparent border border-color-white h-56 px-5 font-color-white hero-btn">
                     Katalog
                   </a>

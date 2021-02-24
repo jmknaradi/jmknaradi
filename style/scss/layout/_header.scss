@@ -9,7 +9,7 @@ header {
   border-color: transparent;
   transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out,
     filter 0.01s linear 0.2s;
-  filter: invert(1);
+  /*filter: invert(1);*/
 
   &.invert {
     background-color: #fff;

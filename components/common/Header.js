@@ -138,11 +138,6 @@ class Header extends Component {
               { customer.firstname }!
             </span>
           ) }
-          <Link href="/account">
-            <a className="font-color-black mx-2">
-              Můj účet
-            </a>
-          </Link>
           <button
             className="bg-transparent mr-2 font-color-black font-weight-semibold"
             type="button"
@@ -179,7 +174,7 @@ class Header extends Component {
         >
           <div className="d-none d-sm-flex">
           <Link href="/">
-              <h4 style={{cursor: 'pointer'}} className="font-family: Sacramento">JMKnářadí.cz</h4>
+              <h4 style={{cursor: 'pointer', "font-size": "2.5rem"}}>JMKnářadí.cz</h4>
             </Link>
           </div>
           <div className="logo-container">

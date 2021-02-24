@@ -129,7 +129,10 @@ class ProductDetail extends Component {
           {}
           <form onSubmit={this.handleAddToCart}>
             <div className="row">
-              <div className="col-12 col-sm-12 mb-3"><h5><b>Vaše cena: {productPrice} Kč</b></h5></div>
+              <div className="col-12 col-sm-12 mb-3"><h8>Původní cena: {product.price.raw} Kč</h8></div>
+            </div>
+            <div className="row">
+              <div className="col-12 col-sm-12 mb-3"><span className="h5"><b>Vaše cena: {productPrice} Kč</b></span> (- {discounts[product.categories[0].slug]}%)</div>
             </div>
             <div className="row my-2">
               <div className="col-12 col-sm-12 mb-12">

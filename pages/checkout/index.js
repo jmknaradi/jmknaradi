@@ -2,12 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import Link from "next/link";
-import ccFormat from "../../utils/ccFormat";
 import commerce from "../../lib/commerce";
 import Root from "../../components/common/Root";
 import ShippingForm from "../../components/checkout/common/ShippingForm";
-import PaymentDetails from "../../components/checkout/common/PaymentDetails";
-import BillingDetails from "../../components/checkout/common/BillingDetails";
 import Loader from "../../components/checkout/Loader";
 import {
   generateCheckoutTokenFromCart as dispatchGenerateCheckout,
@@ -18,7 +15,8 @@ import {
 } from "../../store/actions/checkoutActions";
 import { connect } from "react-redux";
 import { withRouter } from "next/router";
-import { CardElement, Elements, ElementsConsumer } from "@stripe/react-stripe-js";
+import { Elements, ElementsConsumer } from "@stripe/react-stripe-js";
+import NotAllowedPage from "../../components/checkout/common/NotAllowedPage";
 
 /**
  * Render the checkout page
@@ -63,7 +61,6 @@ class CheckoutPage extends Component {
       loading: false,
     };
 
-    this.captureOrder = this.captureOrder.bind(this);
     this.handleChangeForm = this.handleChangeForm.bind(this);
     this.handleCaptureSuccess = this.handleCaptureSuccess.bind(this);
     this.handleCaptureError = this.handleCaptureError.bind(this);
@@ -73,7 +70,7 @@ class CheckoutPage extends Component {
 
   componentDidMount() {
     // if cart is empty then redirect out of checkout;
-    if (this.props.cart && this.props.cart.total_items === 0) {
+    if (this.props.cart && typeof this.props.cart.total_items === 'undefined' || this.props.cart.total_items === 0) {
       this.redirectOutOfCheckout();
     }
 
@@ -214,88 +211,14 @@ class CheckoutPage extends Component {
     }
   }
 
-  /**
-   * Capture the order
-   *
-   * @param {Event} e
-   */
-  captureOrder(e) {
-    e.preventDefault();
-
-    // reset error states
-    this.setState({
-      errors: {
-        shippingMethod: null,
-        gateway_error: null,
-        "shipping[name]": null,
-        "shipping[street]": null,
-      },
-    });
-
-    // set up line_items object and inner variant object for order object below
-    /*const line_items = this.props.checkout.live.line_items.reduce((obj, lineItem) => {
-      const variants = lineItem.variants.reduce((obj, variant) => {
-        obj[variant.variant_id] = variant.option_id;
-        return obj;
-      }, {});
-      obj[lineItem.id] = { ...lineItem, variants };
-      return obj;
-    }, {});*/
-
-    // construct order object
-    const newOrder = {
-      line_items,
-      customer: {
-        firstname: this.state.firstName,
-        lastname: this.state.lastName,
-        email: this.state.customerEmail,
-      },
-      // collected 'order notes' data for extra field configured in the Chec Dashboard
-      extrafields: {
-        extr_j0YnEoqOPle7P6: this.state.orderNotes,
-      },
-      // Add more to the billing object if you're collecting a billing address in the
-      // checkout form. This is just sending the name as a minimum.
-      billing: {
-        name: `${this.state.firstName} ${this.state.lastName}`,
-      },
-      shipping: {
-        name: this.state["shipping[name]"],
-      },
-      fulfillment: {
-        shipping_method: this.state["fulfillment[shipping_method]"],
-      },
-    };
-
-    // If test gateway selected add necessary card data for the order to be completed.
-    if (this.state.selectedGateway === "test_gateway") {
-      this.setState({
-        loading: true,
-      });
-
-      newOrder.payment.card = {
-        number: this.state.cardNumber,
-        expiry_month: this.state.expMonth,
-        expiry_year: this.state.expYear,
-        cvc: this.state.cvc,
-        postal_zip_code: this.state.billingPostalZipcode,
-      };
-    }
-
-    // Capture the order
-    /* this.props.dispatchCaptureOrder(this.props.checkout.id, newOrder)
-      .then(this.handleCaptureSuccess)
-      .catch(this.handleCaptureError);*/
-  }
-
   isNotCartEmpty(cart) {
-    return cart && cart.total_items !== 0;
+    return cart && typeof cart.total_items !== "undefined" && cart.total_items !== 0;
   }
 
   recountCartPrices(customer, products, cart, selectedShippingOption) {
-    const customerDiscounts = customer.external_id.split("-");
-    let subtotal = 0;
     if (this.isNotCartEmpty(cart)) {
+      const customerDiscounts = customer.external_id.split("-");
+      let subtotal = 0;
       cart.line_items.map((item) => {
         const product = products.find((product) => product.id === item.product_id);
         const category = product.categories[0].slug;
@@ -309,6 +232,7 @@ class CheckoutPage extends Component {
         subtotal += totalDiscountPrice;
         return item;
       });
+      console.log(selectedShippingOption);
       const taxPrice = Math.round(subtotal * 0.21);
       const totalSum = Math.round(
         subtotal + Number(taxPrice) + Number(selectedShippingOption.price)
@@ -326,80 +250,45 @@ class CheckoutPage extends Component {
         .map((key) => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
         .join("&");
     };
-    const items = this.props.cart.line_items.map((item) => {
-      return {
-        product: item.product_name,
-        quantity: item.quantity,
-        originalPrice: item.price.raw,
-        discountPrice: item.discountPrice,
-        discountPercentage: item.discountPercentage,
-        total: item.line_total.formatted,
-      };
-    });
-    const body = {
-      formName: "order",
-      name: this.state.firstName,
-      address: this.state.lastName,
-      ico: this.state.ico,
-      dic: this.state.dic,
-      phone: this.state.phone,
-      cart: {
-        taxes: this.props.cart.taxPrice,
-        totalPriceWithTaxes: this.props.cart.totalSum,
-        items: items,
-      },
-      shippingMethod: this.state.shippingMethod,
-    };
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({ 
-        "form-name": "order", 
-      ...this.state, 
-      "items": this.getItems(),
-      "totalPriceWithoutTaxes": this.props.cart.subtotal.formatted,
-      "taxPrice": this.props.cart.taxPrice,
-      "totalPriceWithTaxes": this.props.cart.totalSum
-    }),
+      body: encode({
+        "form-name": "order",
+        ...this.state,
+        items: this.getItems(),
+        totalPriceWithoutTaxes: this.props.cart.subtotal.formatted,
+        taxPrice: this.props.cart.taxPrice,
+        totalPriceWithTaxes: this.props.cart.totalSum,
+      }),
     })
-      .then(() => alert("Success!"))
+      .then(() => {
+        commerce.cart.delete().then((response) => {
+          this.props.router.push("/checkout/confirm");
+        });
+      })
       .catch((error) => alert(error));
   };
-
-  getHiddenFields() {
-    let items = this. getItems();
-    return (
-      <>
-        <input name="totalPriceWithoutTaxes" value={this.props.cart.taxPrice} hidden />
-        <input name="taxPrice" value={this.props.cart.taxPrice} hidden />
-        <input name="totalPriceWithTaxes" value={this.props.cart.totalSum} hidden />
-        <input name="items" value={items} hidden />
-      </>
-    );
-  }
 
   getItems() {
     let items = "";
     this.props.cart.line_items.forEach((item) => {
-      items += "<li>" + item.quantity + "x " 
-      + item.product_name + " - " 
-      + "<b>" + item.line_total.formatted + " Kč</b> (" 
-      + item.discountPercentage + "% sleva)" 
-      + " - původně " 
-      + (item.price.raw * item.quantity) 
-      + " Kč</li>";
+      items +=
+        "<li>" +
+        item.quantity +
+        "x " +
+        item.product_name +
+        " - " +
+        "<b>" +
+        item.line_total.formatted +
+        " Kč</b> (" +
+        item.discountPercentage +
+        "% sleva)" +
+        " - původně " +
+        item.price.raw * item.quantity +
+        " Kč</li>";
     });
     return items;
-  }
-
-  printDocument() {
-    const input = document.getElementById("toPrint");
-    html2canvas(input).then(canvas => {
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF();
-      pdf.addImage(imgData, "JPEG", 0, 0);
-      this.setState({pdf: pdf});
-    });
   }
 
   render() {
@@ -423,9 +312,9 @@ class CheckoutPage extends Component {
               <div className="col-12 col-md-10 col-lg-6 offset-md-1 offset-lg-0">
                 {/* Breadcrumbs */}
                 <div className="d-flex pb-4 breadcrumb-container">
-                  <Link href="/collection">
+                  <Link href="/">
                     <div className="font-size-caption text-decoration-underline cursor-pointer">
-                      Obchod
+                      Katalog
                     </div>
                   </Link>
                   <img src="/icon/arrow-right.svg" className="w-16 mx-1" alt="Arrow icon" />
@@ -463,7 +352,7 @@ class CheckoutPage extends Component {
                     <p className="checkout-error">
                       {!selectedShippingOption ? "Vyberte platební metodu!" : ""}
                     </p>
-                    
+
                     {customer ? (
                       <button
                         type="submit"
@@ -500,7 +389,11 @@ class CheckoutPage extends Component {
                               <p className="font-color-light">Počet ks: {item.quantity}</p>
                             </div>
                             <div className="text-right font-weight-semibold">
-                              {item.line_total.formatted} Kč
+                              <p className="font-color-light">
+                                Původní cena: {item.price.raw * item.quantity} Kč
+                              </p>
+                              <p>Sleva: {item.discountPercentage}%</p>
+                              <p>Vaše cena: {item.line_total.formatted} Kč</p>
                             </div>
                           </div>
                         </div>
@@ -533,13 +426,20 @@ class CheckoutPage extends Component {
                       </div>
                     ))}
                   </div>
-                  <div className="d-flex justify-content-between align-items-center mb-2 pt-3">
-                    <p className="font-size-title font-weight-semibold">Celkově</p>
-                    <p className="text-right font-weight-semibold font-size-title">
-                      {this.isNotCartEmpty(cart) ? cart.totalSum : ""} Kč
-                    </p>
+                  <div className="d-flex flex-grow-1">
+                    <div className="flex-grow-1">
+                      <p className="font-size-title font-weight-semibold">Celkově bez DPH</p>
+                      <p className="font-size-title font-weight-semibold">Celkově s DPH</p>{" "}
+                    </div>
+                    <div className="text-right font-weight-semibold">
+                      <p className="font-size-title">
+                        {this.isNotCartEmpty(cart) ? cart.subtotal.formatted : ""} Kč
+                      </p>
+                      <p className="font-size-title">
+                        {this.isNotCartEmpty(cart) ? cart.totalSum : ""} Kč
+                      </p>
+                    </div>
                   </div>
-
                   {customer ? (
                     <button
                       type="submit"
@@ -557,7 +457,7 @@ class CheckoutPage extends Component {
         </Root>
       );
     } else {
-      return <h4>Pouze pro registrované!</h4>;
+      return <NotAllowedPage />;
     }
   }
 }

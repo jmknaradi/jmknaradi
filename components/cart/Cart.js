@@ -128,13 +128,14 @@ class Cart extends Component {
                   </div>
                   {/* Cart Footer */}
                   <div className="cart-footer">
+                  <p style={{"font-size": "0.6rem"}}>Všechny uvedené ceny jsu bez DPH</p>
                     <div className="mb-3 d-flex">
                       <p className="font-color-light mr-2 font-weight-regular">Mezisoučet:</p>
                       <p>{cart.subtotal.formatted} Kč</p>
                     </div>
                     <div className="row">
                       <div className="col-6 d-none d-md-block">
-                        <Link href="/collection">
+                        <Link href="/">
                           <a className="h-56 d-flex align-items-center justify-content-center border border-color-black bg-white w-100 flex-grow-1 font-weight-medium font-color-black px-3">
                             Pokračovat v nakupování
                           </a>

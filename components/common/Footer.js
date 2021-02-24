@@ -26,8 +26,8 @@ const Footer = () => (
     </div>
     <div className="custom-container my-0">
       <p className="font-family-secondary font-size-display1 mb-4">Kontaktujte nás</p>
-      <div class="row">
-        <div class="col-md-6 col12">
+      <div className="row">
+        <div className="col-md-6 col12">
           <form name="contact" method="POST" data-netlify="true">
             <input type="hidden" name="form-name" value="contact" />
             <div className="row my-2 col-12 col-md-12">
