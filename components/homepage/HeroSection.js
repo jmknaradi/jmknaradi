@@ -6,9 +6,9 @@ const params = {
   modules: [EffectFade, Autoplay],
   slidesPerView: 1,
   watchOverflow: false,
-  autoplay: {
+  /*autoplay: {
     delay: 5000
-  },
+  },*/
   loop: true,
   allowTouchMove: false,
   speed: 1000,
@@ -18,7 +18,7 @@ const params = {
   }
 };
 const images = [
-  '/images/naradi.png'
+  '/images/naradi_komplet_dal.png'
 ];
 
 export default class HeroSection extends Component {
@@ -35,7 +35,7 @@ export default class HeroSection extends Component {
                 }}
               >
                 <p className="font-size-display5 font-family-secondary mb-4 text-center hero-header">
-                  Kvalitní české nářadí ruční výroby
+                  Kvalitní české zahradní nářadí
                 </p>
                 <Link href="/#products">
                   <a className="d-flex align-items-center bg-transparent border border-color-white h-56 px-5 font-color-white hero-btn">
