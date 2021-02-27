@@ -9,7 +9,7 @@ class ProductsBanner extends Component {
     const { customer } = this.props;
 
     return (
-      <div id="products" className="custom-container mt-5">
+      <div id="products" className="custom-container">
         <ProductRow products={products} customer={customer}/>  
       </div>
     );

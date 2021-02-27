@@ -28,7 +28,7 @@ export default class HeroSection extends Component {
           {images.map((image, index) => (
             <div key={image}>
               <div
-                className="hero-slide d-flex align-items-center justify-content-center flex-column font-color-white py-5"
+                className="hero-slide d-flex align-items-centere flex-column font-color-white py-5"
                 style={{
                   backgroundImage: `url("${image}")`
                 }}

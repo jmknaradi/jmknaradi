@@ -3,9 +3,10 @@ $color: rgba(0, 0, 0, 0);
 .hero-section {
   .hero-slide {
     min-height: 85vh;
-    background-size: 100%;
+    background-size: 75%;
     background-position: center;
     background-repeat: no-repeat;
+    justify-content: flex-end;
   }
 
   .circle {
@@ -22,7 +23,9 @@ $color: rgba(0, 0, 0, 0);
   .hero-header {
     text-shadow: 2px 2px 3px rgba(33, 33, 33, 0.5);
     filter: invert(1) grayscale(1) contrast(9);
-    font-size: 3rem;
+    font-size: 2rem;
+    position: relative;
+    top: 30px;
   }
 
   .hero-subheader {

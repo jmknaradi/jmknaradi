@@ -174,7 +174,7 @@ class Header extends Component {
         >
           <div className="d-none d-sm-flex">
           <Link href="/">
-              <h4 style={{cursor: 'pointer', "font-size": "2.5rem"}}>JMKnářadí.cz</h4>
+              <h4 style={{cursor: 'pointer', "font-size": "2rem"}}>JMKnářadí.cz</h4>
             </Link>
           </div>
           <div className="logo-container">
