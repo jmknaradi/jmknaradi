@@ -22,9 +22,7 @@ $color: rgba(0, 0, 0, 0);
   .hero-header {
     text-shadow: 2px 2px 3px rgba(33, 33, 33, 0.5);
     filter: invert(1) grayscale(1) contrast(9);
-    @include mobile {
-      font-size: 2em;
-    }
+    font-size: 3rem;
   }
 
   .hero-subheader {

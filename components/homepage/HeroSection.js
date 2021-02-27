@@ -35,13 +35,8 @@ export default class HeroSection extends Component {
                 }}
               >
                 <p className="font-size-display5 font-family-secondary mb-4 text-center hero-header">
-                  Kvalitní české zahradní nářadí
+                  Kvalitní zahradní nářadí vyrobené v České republice
                 </p>
-                <Link href="/#products">
-                  <a className="d-flex align-items-center bg-transparent border border-color-white h-56 px-5 font-color-white hero-btn">
-                    Katalog
-                  </a>
-                </Link>
               </div>
             </div>
           ))}
