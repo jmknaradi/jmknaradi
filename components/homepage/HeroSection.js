@@ -33,7 +33,7 @@ export default class HeroSection extends Component {
                   backgroundImage: `url("${image}")`
                 }}
               >
-                <p className="font-size-display5 font-family-secondary mb-4 text-center hero-header">
+                <p className="font-size-display5 font-family-secondary text-center hero-header">
                   Kvalitní zahradní nářadí vyrobené v České republice
                 </p>
               </div>
