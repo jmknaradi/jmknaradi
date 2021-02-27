@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Swiper, { EffectFade, Autoplay } from 'react-id-swiper';
-import Link from 'next/link';
 
 const params = {
   modules: [EffectFade, Autoplay],
@@ -18,7 +17,7 @@ const params = {
   }
 };
 const images = [
-  '/images/naradi_komplet_dal.png'
+  '/images/naradi_porovnane.png'
 ];
 
 export default class HeroSection extends Component {
