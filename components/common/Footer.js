@@ -30,6 +30,11 @@ const Footer = () => (
         <div className="col-md-6 col12">
           <form name="contact" method="POST" data-netlify="true">
             <input type="hidden" name="form-name" value="contact" />
+            <p class="hidden">
+              <label>
+                Nevyplňuj v případě, že jsi člověk: <input name="bot-field" />
+              </label>
+            </p>
             <div className="row my-2 col-12 col-md-12">
               <input type="email" name="email" className="w-100" placeholder="Váš email" required />
             </div>
