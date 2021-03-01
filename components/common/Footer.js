@@ -70,9 +70,9 @@ const Footer = () => (
           <div class="row address-contact">Vojtěchov 150, 539 01 Hlinsko</div>
           <div class="row address-contact">+420 722 016 026</div>
           <div class="row address-contact">
-            <a href="mailto:jmk@jmksluzby.cz">jmk@jmksluzby.cz</a>
+            <a href="mailto:jmk@jmksluzby.cz">obchod@jmknaradi.cz</a>
           </div>
-          <div class="row address-contact">IČO: 08494436</div>
+          <div class="row address-contact">IČ: 08494436</div>
           <div class="row address-contact">DIČ: CZ08494436</div>
         </div>
       </div>

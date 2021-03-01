@@ -8,7 +8,8 @@ export default function ProductCard({ permalink, image, name, description, price
         <div
           className="mb-3"
           style={{
-            paddingBottom: '125%',
+            paddingBottom: '130%',
+            paddingTop: '10%',
             background: `url("${image}") center center/cover`
           }}
         />

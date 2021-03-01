@@ -35,7 +35,7 @@ export default class ShippingForm extends Component {
           </div>
           <div className="col-12 col-sm-4 mb-3">
             <label className="w-100">
-              <p className="mb-1 font-size-caption font-color-light">IČO*</p>
+              <p className="mb-1 font-size-caption font-color-light">IČ*</p>
               <input
                 name="ico"
                 value={ico}
